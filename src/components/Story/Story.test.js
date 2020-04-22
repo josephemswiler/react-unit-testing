@@ -11,96 +11,68 @@ afterEach(() => {
   axios.mockReset();
 });
 
-describe("render <Story /> from fetchStory response", () => {
-  const res = {
-    data: {
-      by: "juancampa",
-      descendants: 107,
-      id: 22935941,
-      kids: [
-        22935985,
-        22936119,
-        22936256,
-        22936057,
-        22936103,
-        22936273,
-        22936241,
-        22936417,
-        22936288,
-        22936316,
-      ],
-      score: 205,
-      time: 1587483712,
-      title: "GitHub Is Degraded/Down",
-      type: "story",
-      url: "https://githubstatus.com/",
-    },
-  };
+const res = {
+  data: {
+    by: "juancampa",
+    descendants: 107,
+    id: 22935941,
+    kids: [
+      22935985,
+      22936119,
+      22936256,
+      22936057,
+      22936103,
+      22936273,
+      22936241,
+      22936417,
+      22936288,
+      22936316,
+    ],
+    score: 205,
+    time: 1587483712,
+    title: "GitHub Is Degraded/Down",
+    type: "story",
+    url: "https://githubstatus.com/",
+  },
+};
+
+test("loading state is displayed before aysnc tick, elements are displayed correctly after", async () => {
+  // Assert the number of assertions to ensure all assertions run.
+  // This is helpful for ensuring async functions resolve for jest.
+  expect.assertions(6);
 
   act(() => {
     axios.get.mockResolvedValue(res); // wrap calls that cause state updates in act()
   });
 
-  test("loading state is displayed before aysnc tick, container is displayed after", async () => {
-    // Assert the number of assertions to ensure all assertions run.
-    // This is helpful for ensuring async functions resolve for jest.
-    expect.assertions(3);
+  const { getByTestId } = render(<Story id={0} fuzzy={""} />); // getByTestId throws error if elements match > 1 || elements match === 0
 
-    const { getByTestId } = render(<Story id={0} fuzzy={""} />); // getByTestId throws error if elements match > 1 || elements match === 0
+  expect(
+    getByTestId("9d8c7a6a-3346-4a04-a557-f4f2316cb3e0")
+  ).toBeInTheDocument();
 
-    expect(
-      getByTestId("9d8c7a6a-3346-4a04-a557-f4f2316cb3e0")
-    ).toBeInTheDocument();
+  // If rendering a component with side effects, await something so that state is updated while test is running
+  const containerRender = await waitForElement(() =>
+    getByTestId("d5bedcfd-4c32-4c0e-9c41-e8997a5c4f50")
+  );
+  expect(containerRender).toBeInTheDocument();
 
-    // If rendering a component with side effects, await something so that state is updated while test is running
-    const containerRender = await waitForElement(() =>
-      getByTestId("d5bedcfd-4c32-4c0e-9c41-e8997a5c4f50")
-    );
+  const titleRender = await waitForElement(() =>
+    getByTestId("3989255b-4fbb-4d68-b6d6-a6708dacb516")
+  );
+  expect(titleRender).toHaveTextContent("GitHub Is Degraded/Down");
 
-    expect(containerRender).toBeInTheDocument();
+  const dateRender = await waitForElement(() =>
+    getByTestId("2cfde5eb-8219-4e8b-8dc5-18fe1f96fe87")
+  );
+  expect(dateRender).toHaveTextContent("Tue Apr 21 2020");
 
-    expect(axios.get).toBeCalledTimes(1); // Make sure the API call was only made once for one render.
-  });
+  const anchorRender = await waitForElement(() =>
+    getByTestId("68ca3ed9-77b0-4812-a159-b90a9dec79d2")
+  );
+  expect(anchorRender.attributes.href.value).toEqual(
+    "https://githubstatus.com/"
+  );
 
-  test("title renders with exact text from mock response", async () => {
-    expect.assertions(2);
-
-    const { getByTestId } = render(<Story id={0} fuzzy={""} />);
-
-    const titleRender = await waitForElement(() =>
-      getByTestId("3989255b-4fbb-4d68-b6d6-a6708dacb516")
-    );
-
-    expect(titleRender).toHaveTextContent("GitHub Is Degraded/Down");
-
-    expect(axios.get).toBeCalledTimes(2);
-  });
-
-  test("date renders with correct date format derived from mock response", async () => {
-    expect.assertions(2);
-    const { getByTestId } = render(<Story id={0} fuzzy={""} />);
-
-    const timeRender = await waitForElement(() =>
-      getByTestId("2cfde5eb-8219-4e8b-8dc5-18fe1f96fe87")
-    );
-
-    expect(timeRender).toHaveTextContent("Tue Apr 21 2020");
-
-    expect(axios.get).toBeCalledTimes(3);
-  });
-
-  test("anchor renders with exact href from mock response", async () => {
-    expect.assertions(2);
-    const { getByTestId } = render(<Story id={0} fuzzy={""} />);
-
-    const anchorRender = await waitForElement(() =>
-      getByTestId("68ca3ed9-77b0-4812-a159-b90a9dec79d2")
-    );
-
-    expect(anchorRender.attributes.href.value).toEqual(
-      "https://githubstatus.com/"
-    );
-
-    expect(axios.get).toBeCalledTimes(4);
-  });
+  expect(axios.get).toBeCalledTimes(1); // Make sure the API call was only made once for one render.
 });
