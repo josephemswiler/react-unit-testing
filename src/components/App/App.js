@@ -19,14 +19,17 @@ function App() {
         <h1 data-testid="95797e4e-4641-4edb-a9a5-aab52d538822">Top Stories</h1>
         <InputGroup>
           Fuzzy Title Search
-          <input value={fuzzy} onChange={handleFuzzy} />
+          <input
+            data-testid="71ee857b-87e1-4b39-a67d-3848abf3896c"
+            value={fuzzy}
+            onChange={handleFuzzy}
+          />
         </InputGroup>
       </Toolbar>
       <Grid data-testid="cfccaf1c-39b0-451c-bdbf-2be5ed33ef48">
-        {data &&
-          data.map((item) => (
-            <Story key={`story-${item}`} id={item} fuzzy={fuzzy} />
-          ))}
+        {data.map((item) => (
+          <Story key={`story-${item}`} id={item} fuzzy={fuzzy} />
+        ))}
       </Grid>
     </Container>
   );
