@@ -1,11 +1,11 @@
 import React from "react";
 import fetchStory from "./fetchStory";
 import styled from "@emotion/styled";
+
 export default function Story(props) {
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
-    if (!props.id) return;
     fetchStory(props.id).then((res) => setData(res));
   }, [props.id]);
   return !data ? (

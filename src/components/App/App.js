@@ -1,5 +1,5 @@
 import React from "react";
-import Story from "./components/Story/Story";
+import Story from "../Story/Story";
 import fetchTopStories from "./fetchTopStories";
 import styled from "@emotion/styled";
 
@@ -10,7 +10,7 @@ function App() {
   const handleFuzzy = ({ target }) => setFuzzy(target.value);
 
   React.useEffect(() => {
-    fetchTopStories().then((res) => setData(res));
+    fetchTopStories().then((res) => setData(res.slice(0, 10)));
   }, []);
 
   return (

@@ -3,7 +3,9 @@ import { cleanup, render } from "@testing-library/react";
 import App from "./App";
 import React from "react";
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+});
 
 test("header should have correct text", () => {
   const { getByTestId } = render(<App />);
