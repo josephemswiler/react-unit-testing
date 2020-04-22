@@ -15,7 +15,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "CI=true react-scripts test "
+      "pre-commit": "CI=true react-scripts test --env=jest-environment-jsdom-sixteen"
     }
   },
   "scripts": {
